@@ -1,0 +1,37 @@
+#include <stdio.h>
+
+int min_operations_to_balance(int collection[], int n) {
+    int counts[3] = {0, 0, 0};
+    int target = n / 3;
+    int operations = 0;
+
+    // Count the remainders
+    for (int i = 0; i < n; i++) {
+        counts[collection[i] % 3]++;
+    }
+
+    // Balancing the counts
+    while (counts[0] != target || counts[1] != target || counts[2] != target) {
+        for (int i = 0; i < 3; i++) {
+            if (counts[i] > target) {
+                int next_i = (i + 1) % 3;
+                int diff = counts[i] - target;
+                if (counts[next_i] < target) {
+                    int transfer = diff < (target - counts[next_i]) ? diff : (target - counts[next_i]);
+                    counts[i] -= transfer;
+                    counts[next_i] += transfer;
+                    operations += transfer;
+                }
+            }
+        }
+    }
+
+    return operations;
+}
+
+int main() {
+    int collection[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    int n = sizeof(collection) / sizeof(collection[0]);
+    printf("Minimum operations needed: %d\n", min_operations_to_balance(collection, n));
+    return 0;
+}
